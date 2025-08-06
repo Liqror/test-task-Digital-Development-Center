@@ -16,7 +16,7 @@ export class NewsService {
   loadNews() {
     this.http.get<NewsItem[]>('/api/news/').subscribe({
       next: (data) => {
-        console.log('Новости с сервера:', data);
+        // console.log('Новости с сервера:', data);
         this.news.set(data);
       },
       error: (err) => {

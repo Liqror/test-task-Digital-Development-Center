@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MapPosition, MapService } from '../../core/map.service';
 
 @Component({
   selector: 'app-map-page',
@@ -7,6 +8,14 @@ import { Component } from '@angular/core';
   templateUrl: './map-page.component.html',
   styleUrl: './map-page.component.scss'
 })
-export class MapPageComponent {
+export class MapPageComponent implements OnInit {
+  constructor(public mapService: MapService) {}
 
+  ngOnInit() {
+    this.mapService.loadPositions();
+  }
+
+  onAddPosition(newPos: MapPosition) {
+    this.mapService.addPosition(newPos);
+  }
 }

@@ -14,7 +14,7 @@ export class AuthService {
   token = signal<string | null>(this.storage.getItem(this.tokenKey));
 
   login(username: string, password: string) {
-    console.log('Trying login with', username, password);
+    // console.log('Trying login with', username, password);
     const headers = new HttpHeaders({
     'Content-Type': 'application/json'
     });
@@ -23,9 +23,8 @@ export class AuthService {
         { headers }
     ).subscribe({
       next: res => {
-        console.log('Login success, token:', res.key);
-        console.log('Login full response:', res);
         this.token.set(res.key);
+        // console.log('AuthService token:', this.token());
         this.storage.setItem(this.tokenKey, res.key);
         this.router.navigate(['/news']);
       },
