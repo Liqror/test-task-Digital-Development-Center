@@ -71,14 +71,15 @@ import Masonry from 'masonry-layout';
       margin: 0;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.5rem;
     }
 
     .news-item {
-      padding: 1rem;
+      padding: 0rem 0.7rem;
       background: #fff;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transform: translateY(-3px);
     }
 
     .news-masonry {
@@ -110,7 +111,7 @@ import Masonry from 'masonry-layout';
   `]
 })
 export class NewsListComponent implements AfterViewInit {
-  @ViewChild('masonryContainer', { static: false }) masonryContainer!: ElementRef<HTMLElement>;
+  @ViewChild('masonryContainer', { static: false }) masonryContainer?: ElementRef<HTMLElement>;
 
   viewMode = signal<'list' | 'tile'>('list');
   masonryInstance: Masonry | null = null;
@@ -118,17 +119,23 @@ export class NewsListComponent implements AfterViewInit {
   constructor(public newsService: NewsService) {
     this.newsService.loadNews();
 
-    // trigger Masonry rebuild when newsList or viewMode changes
+    // При смене режима — вызываем функцию перестроения
     effect(() => {
-      if (this.viewMode() === 'tile') {
-        setTimeout(() => this.layoutMasonry(), 0);
+      const mode = this.viewMode();
+      if (mode === 'tile') {
+        // Делаем небольшой таймаут чтобы Angular отрисовал плитки
+        setTimeout(() => this.initMasonry(), 100);
+      } else {
+        // Очищаем masonry при переходе на список
+        this.destroyMasonry();
       }
     });
 
+    // При изменении списка новостей в режиме плитки тоже перестраиваем
     effect(() => {
-      const _ = this.newsList();
+      const news = this.newsList();
       if (this.viewMode() === 'tile') {
-        setTimeout(() => this.layoutMasonry(), 0);
+        setTimeout(() => this.layoutMasonry(), 100);
       }
     });
   }
@@ -136,21 +143,37 @@ export class NewsListComponent implements AfterViewInit {
   newsList = this.newsService.news;
 
   ngAfterViewInit(): void {
+    if (this.viewMode() === 'tile') {
+      this.initMasonry();
+    }
+  }
+
+  initMasonry() {
+    if (!this.masonryContainer) return;
+
+    // Если уже есть инстанс — уничтожаем его
+    this.destroyMasonry();
+
+    this.masonryInstance = new Masonry(this.masonryContainer.nativeElement, {
+      itemSelector: '.grid-item',
+      columnWidth: '.grid-item',
+      percentPosition: true,
+      gutter: 16,
+    });
+
     this.layoutMasonry();
   }
 
   layoutMasonry() {
-    if (this.viewMode() !== 'tile' || !this.masonryContainer) return;
-
-    this.masonryInstance ??= new Masonry(this.masonryContainer.nativeElement, {
-      itemSelector: '.grid-item',
-      columnWidth: '.grid-item',
-      percentPosition: true,
-      gutter: 16
-    });
-
+    if (!this.masonryInstance) return;
     this.masonryInstance.reloadItems?.();
     this.masonryInstance.layout?.();
   }
 
+  destroyMasonry() {
+    if (this.masonryInstance) {
+      this.masonryInstance.destroy?.();
+      this.masonryInstance = null;
+    }
+  }
 }
