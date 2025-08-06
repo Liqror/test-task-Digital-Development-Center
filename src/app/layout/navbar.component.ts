@@ -8,21 +8,24 @@ import { Router } from '@angular/router';
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, RouterModule],
-    template: `
-    <nav>
-      <button class="burger" (click)="toggleMenu()">☰</button>
-      <ul [class.open]="menuOpen()">
-        <li><a routerLink="/news" routerLinkActive="active">Новости</a></li>
-        <li *ngIf="isLoggedIn()">
-          <a routerLink="/map" routerLinkActive="active">Карта</a>
-        </li>
-        <li>
-          <a href="#" (click)="authAction($event)">
-            <span *ngIf="isLoggedIn(); else loginIcon">Выйти</span>
-            <ng-template #loginIcon>Войти</ng-template>
-          </a>
-        </li>
-      </ul>
+  template: `
+    <nav class="navbar">
+      <div class="nav-left">
+        <button class="burger" (click)="toggleMenu()">☰</button>
+        <ul [class.open]="menuOpen()">
+          <li><a routerLink="/news" routerLinkActive="active">Новости</a></li>
+          <li *ngIf="isLoggedIn()">
+            <a routerLink="/map" routerLinkActive="active">Карта</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="auth-button">
+        <a href="#" (click)="authAction($event)">
+          <span *ngIf="isLoggedIn(); else loginText">Выйти</span>
+          <ng-template #loginText>Войти</ng-template>
+        </a>
+      </div>
     </nav>
   `,
   styleUrls: ['./navbar.component.scss'],
