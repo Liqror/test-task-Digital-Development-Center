@@ -10,13 +10,24 @@ import { NavbarComponent } from './navbar.component';
   template: `
     <app-navbar></app-navbar>
     <main class="content">
-      <router-outlet></router-outlet>
+      <!-- <div class="container"> -->
+        <router-outlet></router-outlet>
+      <!-- </div> -->
     </main>
   `,
   styles: [`
     .content {
-      padding: 1rem;
+      padding: 2rem;
     }
+    // .container {
+    //   max-width: 900px;
+    //   margin: 0 auto;
+    //   background: white;
+    //   padding: 2rem;
+    //   border-radius: var(--border-radius);
+    //   box-shadow: var(--shadow);
+    // }
+
   `]
 })
 export class ShellComponent {}

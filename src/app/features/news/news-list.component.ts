@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { NewsTileComponent, NewsItem } from './news-tile.component';
+import { NewsTileComponent } from './news-tile.component';
+import { NewsService } from '../../core/news.service';
+import Masonry from 'masonry-layout';
 
 @Component({
   selector: 'app-news-list',
@@ -10,54 +11,146 @@ import { NewsTileComponent, NewsItem } from './news-tile.component';
   template: `
     <section>
       <div class="view-toggle">
-        <button (click)="viewMode.set('list')" [disabled]="viewMode() === 'list'">Список</button>
-        <button (click)="viewMode.set('tile')" [disabled]="viewMode() === 'tile'">Плитка</button>
+        <button 
+          (click)="viewMode.set('list')" 
+          [class.active]="viewMode() === 'list'"
+        >
+          ☰ Список
+        </button>
+        <button 
+          (click)="viewMode.set('tile')" 
+          [class.active]="viewMode() === 'tile'"
+        >
+          ◼ Плитка
+        </button>
       </div>
 
-      <ul *ngIf="viewMode() === 'list'">
-        <li *ngFor="let news of newsList">
+      <ul *ngIf="viewMode() === 'list'" class="news-list">
+        <li *ngFor="let news of newsList()" class="news-item">
           <h3>{{ news.title }}</h3>
-          <p>{{ news.summary }}</p>
-          <small>{{ news.date | date:'shortDate' }}</small>
+          <p>{{ news.content }}</p>
         </li>
       </ul>
 
-      <div *ngIf="viewMode() === 'tile'" class="tiles">
-        <app-news-tile *ngFor="let news of newsList" [news]="news"></app-news-tile>
+      <div *ngIf="viewMode() === 'tile'" class="news-masonry" #masonryContainer>
+        <app-news-tile 
+          *ngFor="let news of newsList()" 
+          [news]="news"
+          class="grid-item"
+        ></app-news-tile>
       </div>
     </section>
   `,
   styles: [`
     .view-toggle {
-      margin-bottom: 1rem;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
-    ul {
+
+    .view-toggle button {
+      font-size: 1rem;
+      padding: 0.5rem 1.2rem;
+      border: 2px solid #007acc;
+      background-color: white;
+      color: #007acc;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .view-toggle button:hover:not(:disabled),
+    .view-toggle button.active {
+      background-color: #007acc;
+      color: white;
+    }
+
+    .news-list {
       list-style: none;
       padding: 0;
-    }
-    li {
-      border-bottom: 1px solid #ddd;
-      padding: 0.5rem 0;
-    }
-    .tiles {
-      display: grid;
-      grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+      margin: 0;
+      display: flex;
+      flex-direction: column;
       gap: 1rem;
+    }
+
+    .news-item {
+      padding: 1rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .news-masonry {
+      display: block;
+    }
+
+    .grid-item {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    @media (min-width: 600px) {
+      .grid-item {
+        width: 48%;
+      }
+    }
+
+    @media (min-width: 900px) {
+      .grid-item {
+        width: 31%;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .grid-item {
+        width: 23%;
+      }
     }
   `]
 })
-export class NewsListComponent {
-  newsList: NewsItem[] = [];
+export class NewsListComponent implements AfterViewInit {
+  @ViewChild('masonryContainer', { static: false }) masonryContainer!: ElementRef<HTMLElement>;
+
   viewMode = signal<'list' | 'tile'>('list');
+  masonryInstance: Masonry | null = null;
 
-  constructor(private http: HttpClient) {
-    this.loadNews();
-  }
+  constructor(public newsService: NewsService) {
+    this.newsService.loadNews();
 
-  loadNews() {
-    this.http.get<NewsItem[]>('http://localhost:8000/api/news/').subscribe({
-      next: (data) => this.newsList = data,
-      error: (err) => console.error('Error loading news:', err)
+    // trigger Masonry rebuild when newsList or viewMode changes
+    effect(() => {
+      if (this.viewMode() === 'tile') {
+        setTimeout(() => this.layoutMasonry(), 0);
+      }
+    });
+
+    effect(() => {
+      const _ = this.newsList();
+      if (this.viewMode() === 'tile') {
+        setTimeout(() => this.layoutMasonry(), 0);
+      }
     });
   }
+
+  newsList = this.newsService.news;
+
+  ngAfterViewInit(): void {
+    this.layoutMasonry();
+  }
+
+  layoutMasonry() {
+    if (this.viewMode() !== 'tile' || !this.masonryContainer) return;
+
+    this.masonryInstance ??= new Masonry(this.masonryContainer.nativeElement, {
+      itemSelector: '.grid-item',
+      columnWidth: '.grid-item',
+      percentPosition: true,
+      gutter: 16
+    });
+
+    this.masonryInstance.reloadItems?.();
+    this.masonryInstance.layout?.();
+  }
+
 }

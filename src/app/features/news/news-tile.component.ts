@@ -1,12 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export interface NewsItem {
-  id: number;
-  title: string;
-  summary: string;
-  date: string;
-}
+import { NewsItem } from '../../core/news.service';
 
 @Component({
   selector: 'app-news-tile',
@@ -15,16 +9,32 @@ export interface NewsItem {
   template: `
     <article class="news-tile">
       <h3>{{ news.title }}</h3>
-      <p>{{ news.summary }}</p>
-      <small>{{ news.date | date:'shortDate' }}</small>
+      <p>{{ news.content }}</p>
     </article>
   `,
   styles: [`
     .news-tile {
-      border: 1px solid #ccc;
       padding: 1rem;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s;
+      overflow-wrap: break-word;
+    }
+
+    .news-tile:hover {
+      transform: translateY(-3px);
+    }
+
+    .news-tile h3 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .news-tile p {
+      margin: 0;
     }
   `]
 })
