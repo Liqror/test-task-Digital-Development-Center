@@ -1,1 +1,20 @@
-<p>map-page works!</p>
+<div id="map"></div>
+
+<div
+  *ngIf="showForm"
+  class="form-popup"
+  [style.top.px]="formPosition.top"
+  [style.left.px]="formPosition.left"
+>
+  <input
+    type="text"
+    [(ngModel)]="newPointName"
+    placeholder="Имя точки"
+    autofocus
+  />
+  <div class="buttons">
+    <button (click)="savePoint()">Сохранить</button>
+    <button (click)="cancel()">Отмена</button>
+  </div>
+</div>
+

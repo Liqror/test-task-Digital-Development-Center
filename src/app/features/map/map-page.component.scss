@@ -1,0 +1,60 @@
+/* Для корректного отображения маркеров */
+@import "leaflet/dist/leaflet.css";
+
+#map {
+  height: 600px;
+  width: 100%;
+  z-index: 0;
+}
+
+.form-popup {
+  position: absolute;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  border-radius: 6px;
+  padding: 1rem;
+  width: 220px;
+  font-family: sans-serif;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-popup input[type="text"] {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline-offset: 2px;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.form-popup input[type="text"]:focus {
+  border-color: #007acc;
+  outline: none;
+}
+
+.form-popup button {
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 2px solid #007acc;
+  background: white;
+  color: #007acc;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-popup button:hover {
+  background-color: #007acc;
+  color: white;
+}
+
+.form-popup .buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}

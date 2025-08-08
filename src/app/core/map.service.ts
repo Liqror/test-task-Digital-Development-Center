@@ -32,12 +32,13 @@ export class MapService {
 
   // Добавление новой позиции на сервер, и обновление сигнала с новыми данными
   addPosition(position: MapPosition) {
+    console.log('Отправляем на сервер:', position);
     return this.http.post<MapPosition>(this.baseUrl, position).subscribe({
       next: (newPosition) => {
-        // Добавляем новую позицию в сигнал
         this.positions.set([...this.positions(), newPosition]);
       },
       error: (err) => console.error('Ошибка добавления позиции:', err),
     });
   }
+
 }
