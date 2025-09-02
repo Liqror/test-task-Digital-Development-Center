@@ -4,10 +4,9 @@ import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar.component';
 
 @Component({
-  selector: 'app-shell',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, NavbarComponent],
-  template: `
+    selector: 'app-shell',
+    imports: [CommonModule, RouterOutlet, NavbarComponent],
+    template: `
     <app-navbar></app-navbar>
     <main class="content">
       <!-- <div class="container"> -->
@@ -15,7 +14,7 @@ import { NavbarComponent } from './navbar.component';
       <!-- </div> -->
     </main>
   `,
-  styles: [`
+    styles: [`
     .content {
       padding: 2rem;
     }

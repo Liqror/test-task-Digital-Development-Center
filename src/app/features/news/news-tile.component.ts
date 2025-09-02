@@ -3,16 +3,15 @@ import { CommonModule } from '@angular/common';
 import { NewsItem } from '../../core/news.service';
 
 @Component({
-  selector: 'app-news-tile',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-news-tile',
+    imports: [CommonModule],
+    template: `
     <article class="news-tile">
       <h3>{{ news.title }}</h3>
       <p>{{ news.content }}</p>
     </article>
   `,
-  styles: [`
+    styles: [`
     .news-tile {
       padding: 1rem;
       border-radius: 8px;

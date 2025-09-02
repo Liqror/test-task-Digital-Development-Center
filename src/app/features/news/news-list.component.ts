@@ -5,10 +5,9 @@ import { NewsService } from '../../core/news.service';
 import Masonry from 'masonry-layout';
 
 @Component({
-  selector: 'app-news-list',
-  standalone: true,
-  imports: [CommonModule, NewsTileComponent],
-  template: `
+    selector: 'app-news-list',
+    imports: [CommonModule, NewsTileComponent],
+    template: `
     <section>
       <div class="view-toggle">
         <button 
@@ -41,7 +40,7 @@ import Masonry from 'masonry-layout';
       </div>
     </section>
   `,
-  styles: [`
+    styles: [`
     .view-toggle {
       display: flex;
       gap: 1rem;

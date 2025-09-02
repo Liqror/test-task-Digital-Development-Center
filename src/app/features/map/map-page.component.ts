@@ -14,11 +14,10 @@ const customIcon = L.icon({
 });
 
 @Component({
-  selector: 'app-map-page',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './map-page.component.html',
-  styleUrls: ['./map-page.component.scss'],
+    selector: 'app-map-page',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './map-page.component.html',
+    styleUrls: ['./map-page.component.scss']
 })
 export class MapPageComponent implements AfterViewInit {
   private map!: L.Map;

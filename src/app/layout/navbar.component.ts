@@ -5,10 +5,9 @@ import { AuthService } from '../core/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-navbar',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
+    selector: 'app-navbar',
+    imports: [CommonModule, RouterModule],
+    template: `
     <nav class="navbar">
       <div class="nav-left">
         <button class="burger" (click)="toggleMenu()">☰</button>
@@ -28,7 +27,7 @@ import { Router } from '@angular/router';
       </div>
     </nav>
   `,
-  styleUrls: ['./navbar.component.scss'],
+    styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
   menuOpen = signal(false);
